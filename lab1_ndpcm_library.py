@@ -1,9 +1,11 @@
-
 from collections import namedtuple
 import numpy as np
 
 # Import quantizer for error
 import lab1_library
+
+alpha = 0.000000005
+k_v = 0.00001
 
 # Declaring namedtuple()
 # n - total length of the simulation (number of samples/iterations)
@@ -17,11 +19,9 @@ import lab1_library
 # e - exact error between the sample and the predicted value (y_hat)
 # eq - quantized value of error (see n_bits!!)
 # y_recreated - vector of all recreated/regenerated samples (used in the prediction!!)
+
 NDPCM = namedtuple('NDAPCM', ['n', 'h_depth', 'n_bits',
                    'phi', 'theta', 'y_hat', 'e', 'eq', 'y_recreated'])
-
-alpha = 0.00000002
-k_v = 0.00000001
 
 def init(n, h_depth, n_bits):
     # Adding values
@@ -30,8 +30,6 @@ def init(n, h_depth, n_bits):
             (n, h_depth)), np.zeros(n), np.zeros(n), np.zeros(n), np.zeros(n)
     )
     data_block.phi[0] = np.array([0, 0, 0])
-    ### Modify initial value for any component, parameter:
-    # ...
     return data_block
 
 
@@ -39,17 +37,12 @@ def prepare_params_for_prediction(data_bloc, k):
     # Update weights for next round (k) based on previous k-1, k-2,...
     # TODO: for first iteration INITIALIZE 'phi' and 'theta'
     if (k == 1):
-        # data_block.phi[0] = ...
-        # data_block.theta[0] = ...
         data_bloc.phi[0] = np.array([0, 0, 0])
         data_bloc.theta[0] = np.array([0, 0, 0])   
         return
     if (k == 2):
-        # data_block.phi[0] = ...
-        # data_block.theta[0] = ...
         data_bloc.phi[1] = np.array([data_bloc.y_recreated[1], 0, 0])
         data_bloc.theta[1] = data_bloc.theta[0] + alpha* data_bloc.phi[0]*data_bloc.eq[1]
-
         return
     # TODO: Fill 'phi' history for 'h_depth' last elements
     data_bloc.phi[k] = np.array(
@@ -63,7 +56,8 @@ def prepare_params_for_prediction(data_bloc, k):
     print("e=", data_bloc.eq[k])
     print("eT=", data_bloc.eq[k].transpose())
     # TODO: Update weights/coefficients 'theta'
-    data_bloc.theta[k] = data_bloc.theta[k-1] + alpha * data_bloc.eq[k] * np.conj(data_bloc.phi[k])
+    # data_bloc.theta[k] = data_bloc.theta[k-1] + alpha * data_bloc.eq[k] * np.conj(data_bloc.phi[k])
+    data_bloc.theta[k] = data_bloc.theta[k-1] + alpha * data_bloc.eq[k-1] * np.conj(data_bloc.phi[k-1])
 
 
     return
@@ -84,10 +78,12 @@ def predict(data_bloc, k):
     print("tran",data_bloc.theta[k-1].transpose() )
     print("normal",data_bloc.theta[k-1])
     # TODO: Return prediction - fix:
+    # data_bloc.y_recreated[k-1] = data_bloc.y_hat[k-1]-data_bloc.eq[k-1]
+    data_bloc.y_recreated[k] = data_bloc.y_hat[k]-data_bloc.eq[k]
     return data_bloc.y_recreated[k-1];
     # return data_bloc.phi[k][0]
     # return data_bloc.y_hat[k]-data_bloc.e[k]
-
+    # return data_bloc.y_hat[k]
 
 def calculate_error(data_block, k, real_y):
     data_block.e[k] = real_y - data_block.y_hat[k]

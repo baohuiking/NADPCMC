@@ -1,20 +1,20 @@
 
-# import numpy as np 
-# ### initialize
-# from collections import namedtuple
+import numpy as np 
+### initialize
+from collections import namedtuple
 
-# # n_bits = 4;
-# # max_q = (2 ** (n_bits -1)) -1;
-# # min_q = -2 ** (n_bits -1);
+# n_bits = 4;
+# max_q = (2 ** (n_bits -1)) -1;
+# min_q = -2 ** (n_bits -1);
 
-# # print(n_bits, min_q, max_q)
+# print(n_bits, min_q, max_q)
 
 # def quantize(a, n_bits):
 #     ## quantize a into integer with n_bits
 
 #     return 0
 
-import numpy as np 
+# import numpy as np 
 
 def quantize(a, n_bits):
     # Calculate the maximum and minimum quantization levels
