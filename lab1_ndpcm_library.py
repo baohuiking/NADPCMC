@@ -75,8 +75,8 @@ def predict(data_bloc, k):
         # data_bloc.y_hat[k] = np.dot(data_bloc.theta[k-1], data_bloc.phi[k-1])
         data_bloc.y_hat[k] = np.dot(data_bloc.theta[0].transpose(), data_bloc.phi[0]) - k_v*data_bloc.eq[0]
     print ( data_bloc.theta[k] @ data_bloc.phi[k])
-    print("tran",data_bloc.theta[k-1].transpose() )
-    print("normal",data_bloc.theta[k-1])
+    # print("tran",data_bloc.theta[k-1].transpose() )
+    # print("normal",data_bloc.theta[k-1])
     # TODO: Return prediction - fix:
     # data_bloc.y_recreated[k-1] = data_bloc.y_hat[k-1]-data_bloc.eq[k-1]
     data_bloc.y_recreated[k] = data_bloc.y_hat[k]-data_bloc.eq[k]
@@ -94,7 +94,6 @@ def calculate_error(data_block, k, real_y):
 
 def reconstruct(data_block, k):
     data_block.y_recreated[k] = data_block.y_hat[k] + data_block.eq[k]
-
 
 
 
